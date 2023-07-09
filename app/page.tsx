@@ -9,14 +9,14 @@ export default function Home() {
 
   // let url = "http://0.0.0.0:8999";
   let url = "https://afs-admin-proxy.fly.dev:443";
+  let client = new AdminAuthenticationServiceClient(url);
 
   // get the public access token
   const getPublicToken = async () => {
     let request = new Empty();
-    let client = new AdminAuthenticationServiceClient(url);
+    
     client.request_public_token(request, {}, (err, response) => {
       if (err) {
-        console.log(err);
         setToken(err.message);
       } else {
         setToken(response.getToken());
