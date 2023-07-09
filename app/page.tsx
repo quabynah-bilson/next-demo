@@ -7,8 +7,8 @@ import { Empty } from "@/generated/common_pb";
 export default function Home() {
   const [token, setToken] = useState("");
 
-  let url = "http://0.0.0.0:8999";
-  // let url = "https://afs-admin-proxy.fly.dev:443";
+  // let url = "http://0.0.0.0:8999";
+  let url = "https://afs-admin-proxy.fly.dev:443";
 
   // get the public access token
   const getPublicToken = async () => {
@@ -17,6 +17,7 @@ export default function Home() {
     client.request_public_token(request, {}, (err, response) => {
       if (err) {
         console.log(err);
+        setToken(err.message);
       } else {
         setToken(response.getToken());
       }
