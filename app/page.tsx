@@ -1,7 +1,10 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { AdminAuthenticationServiceClient } from "@/generated/Admin_serviceServiceClientPb";
+import {
+  AdminAuthenticationServiceClient,
+  AdminUserServiceClient,
+} from "@/generated/Admin_serviceServiceClientPb";
 import { Empty } from "@/generated/common_pb";
 
 export default function Home() {
@@ -11,17 +14,27 @@ export default function Home() {
   let url = "https://afs-admin-proxy.fly.dev:443";
   let client = new AdminAuthenticationServiceClient(url);
 
-  
   // get the public access token
   const getPublicToken = async () => {
     let request = new Empty();
-    
+
     client.request_public_token(request, {}, (err, response) => {
       if (err) {
         setToken(err.message);
-      } else {
-        setToken(response.getToken());
+        return;
       }
+      setToken(response.getToken());
+      let userClient = new AdminUserServiceClient(url);
+      let newRidersStream = userClient.get_new_riders(request, {
+        Authorization: `Bearer ${response.getToken()}`,
+      });
+      newRidersStream.on("data", (data) => {
+        console.log(data.toObject());
+      });
+      newRidersStream.on("error", (err) => {
+        console.log(err);
+        alert(err.message)
+      });
     });
   };
 
