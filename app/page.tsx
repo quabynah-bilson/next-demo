@@ -11,6 +11,7 @@ export default function Home() {
   let url = "https://afs-admin-proxy.fly.dev:443";
   let client = new AdminAuthenticationServiceClient(url);
 
+  
   // get the public access token
   const getPublicToken = async () => {
     let request = new Empty();
